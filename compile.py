@@ -28,7 +28,7 @@ for issue in github.get_repo(REPO).get_issues():
             issue_dict[label] = []
         issue_dict[label].append(f"### {issue.title} \n{issue.body}\n")
 
-labels = ['Severity: High Risk', 'Severity: Medium Risk', 'Severity: Low Risk', 'Severity: Gas Optimization', 'Severity: Informational']
+labels = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: Medium Risk', 'Severity: Low Risk', 'Severity: Gas Optimization', 'Severity: Informational']
 
 with open("Report.md", "w") as report:
     for label in labels:
