@@ -17,21 +17,34 @@ github = Github(config.TOKEN)
 
 issue_dict = {}
 
-# TODO catch get_repo() 404 errors and produce a gentle suggestion on what's wrong.
+labels = ['3 (High Risk)', '2 (Med Risk)', '1 (Low Risk)', '0 (Non-critical)', 'G (Gas Optimization)']
+
+def highest_label(all_labels: [str]) -> str:
+    indices = [labels.index(label) for label in all_labels if label in labels]
+    return labels[min(indices)] if indices != [] else 'Unlabeled'
+
+# The C4 issues are like
+#     # Handle
+#     name
+#     # Description.
+# We want to make it into
+#     ### Handle
+#     name
+#     ### Description
+#     ...
+# Ugly hack
+def format_body(body: str) -> str:
+    return body.replace("# ", "### ")
 
 for issue in github.get_repo(REPO).get_issues():
-    # TODO what happens when there are more than one issue labels. In that
-    # case, need to put the issue into the label with highest severity.
-    if len(issue.labels) != 0:
-        label = issue.labels[0].name
-        if label not in issue_dict:
-            issue_dict[label] = []
-        issue_dict[label].append(f"### {issue.title} \n{issue.body}\n")
-
-labels = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: Medium Risk', 'Severity: Low Risk', 'Severity: Gas Optimization', 'Severity: Informational']
+    label = highest_label(map(lambda l: l.name, issue.labels))
+    if label not in issue_dict:
+        issue_dict[label] = []
+    issue_dict[label].append(f"## {issue.title} \n{format_body(issue.body)}\n")
 
 with open("Report.md", "w") as report:
-    for label in labels:
-        report.write(f"## {label[10:]}\n\n")
-        for content in issue_dict[label]:
-            report.write(content.replace("\r\n", "\n"))
+    for label in labels + ['Unlabeled']:
+        report.write(f"# {label} \n\n")
+        if label in issue_dict:
+            for content in issue_dict[label]:
+                report.write(content.replace("\r\n", "\n"))

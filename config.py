@@ -10,4 +10,4 @@ TODO may be possible to decrease the permissions further.
 
 TOKEN = "change-this-to-your-personal-access-token"
 
-REPO = "spearbit-audits/change-the-name"
+REPO = "code-423n4/change-the-name"
