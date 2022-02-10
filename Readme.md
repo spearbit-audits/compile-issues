@@ -22,7 +22,7 @@ After that update the [`config.py`](./config.py) file locally with the token and
 python3 compile.py
 ```
 
-The file `Report.md` would contain the generated report.
+The file `report.md` would contain the generated report.
 
 ## Notes
 
