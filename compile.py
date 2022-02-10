@@ -1,5 +1,5 @@
 """A simple script that collects issues from a repo and generate a markdown
-file (Report.md).
+file (report.md).
 
 A personal access token will need to be configured. Also the repo name will
 need to be provided. Add these in `config.py`.
@@ -30,7 +30,7 @@ for issue in github.get_repo(REPO).get_issues():
 
 labels = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: Medium Risk', 'Severity: Low Risk', 'Severity: Gas Optimization', 'Severity: Informational']
 
-with open("Report.md", "w") as report:
+with open("report.md", "w") as report:
     for label in labels:
         report.write(f"## {label[10:]}\n\n")
         for content in issue_dict[label]:
