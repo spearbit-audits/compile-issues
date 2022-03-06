@@ -37,3 +37,12 @@ with open("report.md", "w") as report:
         report.write(f"## {label[10:]}\n\n")
         for content in issue_dict[label]:
             report.write(content.replace("\r\n", "\n"))
+
+with open("severity_counts.sh", "w") as counts_file:
+    total_count = 0
+    for label in SEVERITY_LABELS:
+        variable_name = label[10:].upper().replace(" ", "_") + "_COUNT="
+        count = len(issue_dict[label])
+        counts_file.write(variable_name + str(count) + '\n')
+        total_count += count
+    counts_file.write('TOTAL_RISK_COUNT=' + str(total_count) + '\n')
