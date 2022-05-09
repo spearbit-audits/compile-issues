@@ -19,6 +19,9 @@ SEVERITY_LABELS = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: 
 
 issue_dict : dict[str, list[str]] = {}
 
+def to_severity(label):
+    return label[10:]
+
 # TODO catch get_repo() 404 errors and produce a gentle suggestion on what's wrong.
 # "GitHub's REST API v3 considers every pull request an issue"--need to filter them out.
 for issue in github.get_repo(REPO).get_issues():
@@ -30,10 +33,13 @@ for issue in github.get_repo(REPO).get_issues():
         label = issue.labels[0].name
         if label not in issue_dict:
            issue_dict[label] = []
-        issue_dict[label].append(f"### {issue.title} \n{issue.body}\n")
+        issue_dict[label].append(
+            f"### {issue.title} \n**Severity:** {to_severity(label)}\n\n{issue.body}\n"
+        )
 
 with open("report.md", "w") as report:
     for label in SEVERITY_LABELS:
-        report.write(f"## {label[10:]}\n\n")
-        for content in issue_dict[label]:
-            report.write(content.replace("\r\n", "\n"))
+        if label in issue_dict:
+            for content in issue_dict[label]:
+                report.write(f"**Severity:** {to_severity(label)}\n\n")
+                report.write(content.replace("\r\n", "\n"))
